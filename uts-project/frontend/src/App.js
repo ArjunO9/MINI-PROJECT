@@ -1,6 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Navbar from './components/layout/Navbar';
+
+// Corrected Import Paths
+import Navbar from './components/Layout/Navbar';
 import Register from './components/auth/Register';
 import Login from './components/auth/Login';
 import AdminDashboard from './Pages/AdminDashboard';
@@ -26,6 +28,8 @@ const App = () => {
             path="/dashboard"
             element={<PrivateRoute component={AdminDashboard} />}
           />
+           {/* Add a default route for the root path */}
+          <Route path="/" element={<Login />} />
         </Routes>
       </div>
     </Router>
