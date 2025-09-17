@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import setAuthToken from '../../services/setAuthToken';
 
 const Login = () => {
+  const navigate = useNavigate(); // Initialize navigate
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -18,9 +20,10 @@ const Login = () => {
       const res = await axios.post('/api/auth/login', formData);
       localStorage.setItem('token', res.data.token);
       setAuthToken(res.data.token);
-      window.location = '/dashboard';
+      navigate('/dashboard'); // Use navigate to redirect
     } catch (err) {
       console.error(err.response.data);
+      alert('Invalid Credentials'); // Give user feedback
     }
   };
 

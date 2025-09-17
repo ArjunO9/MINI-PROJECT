@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import setAuthToken from '../../services/setAuthToken';
 
 const Register = () => {
+  const navigate = useNavigate(); // Initialize navigate
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -19,9 +22,11 @@ const Register = () => {
     try {
       const res = await axios.post('/api/auth/register', formData);
       localStorage.setItem('token', res.data.token);
-      window.location = '/dashboard';
+      setAuthToken(res.data.token);
+      navigate('/dashboard'); // Use navigate to redirect
     } catch (err) {
       console.error(err.response.data);
+      alert('Registration failed. User may already exist.'); // Give user feedback
     }
   };
 
@@ -39,7 +44,7 @@ const Register = () => {
         </div>
         <div className="form-group">
           <label>Password</label>
-          <input type="password" name="password" value={password} onChange={onChange} required />
+          <input type="password" name="password" value={password} onChange={onChange} required minLength="6" />
         </div>
         <div className="form-group">
           <label>Business Name</label>
@@ -59,4 +64,4 @@ const Register = () => {
   );
 };
 
-export default Register;    
+export default Register;
