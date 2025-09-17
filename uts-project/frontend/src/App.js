@@ -3,9 +3,9 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Navbar from './components/layout/Navbar';
 import Register from './components/auth/Register';
 import Login from './components/auth/Login';
-import AdminDashboard from './pages/AdminDashboard';
-import TokenPage from './pages/TokenPage';
-import PrivateRoute from './components/routing/PrivateRoute';
+import AdminDashboard from './Pages/AdminDashboard';
+import TokenPage from './Pages/TokenPage';
+import PrivateRoute from './components/Routing/PrivateRoute';
 import setAuthToken from './services/setAuthToken';
 import './App.css';
 
