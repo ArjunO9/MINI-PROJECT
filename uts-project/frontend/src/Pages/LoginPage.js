@@ -1,184 +1,71 @@
-// LoginPage.js
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import axios from 'axios';
+import io from 'socket.io-client';
 
-const LoginPage = () => {
-  const [loginType, setLoginType] = useState('user');
-  const [businessName, setBusinessName] = useState('');
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const navigate = useNavigate();
+const TokenPage = () => {
+    const { businessId } = useParams();
+    const [business, setBusiness] = useState(null);
+    const [userToken, setUserToken] = useState(null);
+    const [servingToken, setServingToken] = useState(null);
+    const [socket, setSocket] = useState(null);
+    
+    useEffect(() => {
+        // We need to get business details to know the tier and form schema
+        const fetchBusiness = async () => {
+            try {
+                // This is a public route we need to create on the backend
+                // to fetch business details without auth.
+                // Let's assume it exists at /api/business/public/:id
+                const res = await axios.get(`/api/business/public/${businessId}`);
+                setBusiness(res.data);
+            } catch (err) {
+                console.error(err);
+            }
+        }
+        fetchBusiness();
+        
+        // Setup socket
+        const newSocket = io('http://localhost:5000');
+        newSocket.emit('join-room', businessId);
+        newSocket.on('token-update', (updatedToken) => {
+            if (updatedToken.status === 'serving') {
+                setServingToken(updatedToken);
+            }
+        });
+        setSocket(newSocket);
+        
+        return () => newSocket.disconnect();
 
-  // In LoginPage.js, update the handleLogin function
-const handleLogin = (e) => {
-  e.preventDefault();
-  if (loginType === 'business') {
-    navigate(`/admin/${businessName.replace(/\s+/g, '-').toLowerCase()}`);
-  } else {
-    navigate('/businesses');
-  }
-  };
+    }, [businessId]);
 
-  return (
-    <div style={styles.loginContainer}>
-      <div style={styles.loginBox}>
-        <h2 style={styles.loginTitle}>Queue Management System</h2>
+    const handleGetToken = async () => {
+        try {
+            const res = await axios.post('/api/token/generate', { businessId });
+            setUserToken(res.data);
+        } catch (err) {
+            console.error(err);
+        }
+    };
+    
+    if (!business) return <div>Loading business details...</div>;
 
-        <div style={styles.toggleContainer}>
-          <button
-            style={{ ...styles.toggleBtn, ...(loginType === 'user' ? styles.activeToggle : {}) }}
-            onClick={() => setLoginType('user')}
-          >
-            User Login
-          </button>
-          <button
-            style={{ ...styles.toggleBtn, ...(loginType === 'business' ? styles.activeToggle : {}) }}
-            onClick={() => setLoginType('business')}
-          >
-            Business Login
-          </button>
+    if (userToken) {
+        return (
+            <div>
+                <h1>Your Token for {business.name}</h1>
+                <h2>Your Number: {userToken.tokenNumber}</h2>
+                <h3>Currently Serving: {servingToken ? servingToken.tokenNumber : '...'}</h3>
+            </div>
+        )
+    }
+
+    return (
+        <div>
+            <h1>Welcome to {business.name}</h1>
+            <button onClick={handleGetToken}>Get a Token</button>
         </div>
-
-        <form onSubmit={handleLogin} style={styles.form}>
-          {loginType === 'business' ? (
-            <>
-              <div style={styles.inputGroup}>
-                <label style={styles.label}>Business Name</label>
-                <input
-                  type="text"
-                  value={businessName}
-                  onChange={(e) => setBusinessName(e.target.value)}
-                  style={styles.input}
-                  required
-                />
-              </div>
-              <div style={styles.inputGroup}>
-                <label style={styles.label}>Password</label>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  style={styles.input}
-                  required
-                />
-              </div>
-            </>
-          ) : (
-            <>
-              <div style={styles.inputGroup}>
-                <label style={styles.label}>Username</label>
-                <input
-                  type="text"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  style={styles.input}
-                  required
-                />
-              </div>
-              <div style={styles.inputGroup}>
-                <label style={styles.label}>Password</label>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  style={styles.input}
-                  required
-                />
-              </div>
-            </>
-          )}
-
-          <button type="submit" style={styles.loginButton}>
-            {loginType === 'business' ? 'Business Login' : 'User Login'}
-          </button>
-        </form>
-
-        <p style={styles.signupText}>
-          Don't have an account? <a href="#" style={styles.signupLink}>Sign up</a>
-        </p>
-      </div>
-    </div>
-  );
+    );
 };
 
-const styles = {
-  loginContainer: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    minHeight: '100vh',
-    backgroundColor: '#f0f2f5'
-  },
-  loginBox: {
-    backgroundColor: 'white',
-    padding: '2rem',
-    borderRadius: '8px',
-    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-    width: '100%',
-    maxWidth: '400px'
-  },
-  loginTitle: {
-    textAlign: 'center',
-    marginBottom: '1.5rem',
-    color: '#1890ff'
-  },
-  toggleContainer: {
-    display: 'flex',
-    marginBottom: '1.5rem',
-    border: '1px solid #d9d9d9',
-    borderRadius: '6px',
-    overflow: 'hidden'
-  },
-  toggleBtn: {
-    flex: 1,
-    padding: '0.5rem',
-    border: 'none',
-    backgroundColor: 'white',
-    cursor: 'pointer',
-    transition: 'all 0.3s'
-  },
-  activeToggle: {
-    backgroundColor: '#1890ff',
-    color: 'white'
-  },
-  form: {
-    display: 'flex',
-    flexDirection: 'column'
-  },
-  inputGroup: {
-    marginBottom: '1rem'
-  },
-  label: {
-    display: 'block',
-    marginBottom: '0.5rem',
-    fontWeight: '500'
-  },
-  input: {
-    width: '100%',
-    padding: '0.5rem',
-    border: '1px solid #d9d9d9',
-    borderRadius: '4px',
-    fontSize: '1rem'
-  },
-  loginButton: {
-    padding: '0.75rem',
-    backgroundColor: '#1890ff',
-    color: 'white',
-    border: 'none',
-    borderRadius: '4px',
-    fontSize: '1rem',
-    cursor: 'pointer',
-    marginTop: '1rem'
-  },
-  signupText: {
-    textAlign: 'center',
-    marginTop: '1.5rem',
-    color: '#666'
-  },
-  signupLink: {
-    color: '#1890ff',
-    textDecoration: 'none'
-  }
-};
-
-export default LoginPage;
+export default TokenPage;

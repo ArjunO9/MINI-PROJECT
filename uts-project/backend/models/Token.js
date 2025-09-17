@@ -1,22 +1,26 @@
 const mongoose = require('mongoose');
 
-const TokenSchema = new mongoose.Schema({
-  tokenNumber: {
-    type: Number,
-    required: true,
-  },
+const tokenSchema = new mongoose.Schema({
   businessId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Business',
     required: true,
   },
+  tokenNumber: {
+    type: Number,
+    required: true,
+  },
   status: {
     type: String,
-    enum: ['waiting', 'serving', 'completed'],
+    enum: ['waiting', 'serving', 'served', 'skipped'],
     default: 'waiting',
   },
-  estimatedWaitTime: {
-    type: Number, // in minutes
+  formData: {
+    type: mongoose.Schema.Types.Mixed, // To store custom form data
+    default: {}
+  },
+  paymentId: {
+    type: String
   },
   createdAt: {
     type: Date,
@@ -24,4 +28,4 @@ const TokenSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model('Token', TokenSchema);1
+module.exports = mongoose.model('Token', tokenSchema);

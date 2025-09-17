@@ -1,34 +1,35 @@
-// App.js
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import LoginPage from './Pages/LoginPage';
-import BusinessSelection from './Pages/BusinessSelection';
-import AdminDashboard from './Pages/AdminDashboard';
-import TokenPage from './Pages/TokenPage';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Navbar from './components/layout/Navbar';
+import Register from './components/auth/Register';
+import Login from './components/auth/Login';
+import AdminDashboard from './pages/AdminDashboard';
+import TokenPage from './pages/TokenPage';
+import PrivateRoute from './components/routing/PrivateRoute';
+import setAuthToken from './services/setAuthToken';
+import './App.css';
+
+if (localStorage.token) {
+  setAuthToken(localStorage.token);
+}
 
 const App = () => {
   return (
     <Router>
-      <div style={styles.app}>
+      <Navbar />
+      <div className="container">
         <Routes>
-          <Route path="/" element={<LoginPage />} />
-          <Route path="/businesses" element={<BusinessSelection />} />
-          <Route path="/admin/:businessId" element={<AdminDashboard />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/token/:businessId" element={<TokenPage />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
+          <Route
+            path="/dashboard"
+            element={<PrivateRoute component={AdminDashboard} />}
+          />
         </Routes>
       </div>
     </Router>
   );
-};
-
-const styles = {
-  app: {
-    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-    color: '#333',
-    minHeight: '100vh',
-    backgroundColor: '#f5f5f5'
-  }
 };
 
 export default App;

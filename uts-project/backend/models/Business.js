@@ -1,29 +1,33 @@
 const mongoose = require('mongoose');
 
-const BusinessSchema = new mongoose.Schema({
+const formFieldSchema = new mongoose.Schema({
+  label: { type: String, required: true },
+  type: { type: String, required: true, enum: ['text', 'number', 'email'] },
+  required: { type: Boolean, default: false }
+});
+
+const businessSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
+    unique: true,
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true,
   },
   tier: {
+    type: String,
+    enum: ['Basic', 'Data Collection', 'Prepaid'],
+    default: 'Basic',
+  },
+  formSchema: [formFieldSchema],
+  servicePrice: {
     type: Number,
-    default: 1, // 1: Basic, 2: Data Collection, 3: Prepaid
+    default: 0
   },
   qrCode: {
-    type: String,
-  },
-  tokenCounter: {
-    type: Number,
-    default: 0,
-  },
-  waitTimePerToken: {
-    type: Number,
-    default: 5, // minutes per token
+    type: String // Will store the data URL of the QR code
   },
   createdAt: {
     type: Date,
@@ -31,4 +35,4 @@ const BusinessSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model('Business', BusinessSchema);
+module.exports = mongoose.model('Business', businessSchema);

@@ -1,101 +1,92 @@
-.App {
-  text-align: center;
+/* General App Styles */
+:root {
+  --primary-color: #007bff;
+  --dark-color: #343a40;
+  --light-color: #f4f4f4;
+  --danger-color: #dc3545;
+  --success-color: #28a745;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+body {
+  font-family: Arial, sans-serif;
+  background-color: var(--light-color);
+  margin: 0;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.container {
+  max-width: 1100px;
+  margin: auto;
+  padding: 0 20px;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-.btn-link {
-  background: white;
-  color: #2563eb;
-  padding: 0.4rem 0.8rem;
-  border-radius: 8px;
-  font-weight: 600;
-  transition: background 0.3s, transform 0.2s;
-}
-
-.btn-link:hover {
-  background: #e0f2fe;
-  transform: scale(1.05);
-}
-.homepage {
-  min-height: calc(100vh - 80px);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  background: linear-gradient(180deg, #f0f9ff, #e0f2fe);
-  text-align: center;
-}
-
-.homepage h2 {
-  font-size: 2rem;
-  color: #1e3a8a;
-}
-
-.homepage p {
-  color: #475569;
-  font-size: 1.1rem;
-  margin-top: 0.5rem;
-}
-/* App.css */
-.navigation {
-  background: linear-gradient(90deg, #4f46e5, #3b82f6);
-  color: white;
-  padding: 1rem 2rem;
+/* Navbar */
+.navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 0.7rem 2rem;
+  background: var(--dark-color);
+  color: #fff;
 }
 
-.nav-links a {
-  color: white;
-  margin-left: 1.5rem;
+.navbar a {
+  color: #fff;
   text-decoration: none;
-  font-weight: 500;
-  transition: color 0.3s;
 }
 
-.nav-links a:hover {
-  color: #dbeafe;
-}
-.App {
-  animation: fadeIn 0.5s ease-in;
+.navbar ul {
+  display: flex;
+  list-style: none;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+.navbar ul li {
+  margin-left: 1rem;
+}
+
+/* Forms */
+.form-container {
+  max-width: 500px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: #fff;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 0.5rem;
+  font-size: 1rem;
+}
+
+/* Buttons */
+.btn {
+  display: inline-block;
+  background: var(--light-color);
+  color: #333;
+  padding: 0.4rem 1.3rem;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+  margin-right: 0.5rem;
+  transition: opacity 0.2s ease-in;
+  outline: none;
+}
+
+.btn-primary {
+  background: var(--primary-color);
+  color: #fff;
+}
+
+.btn-danger {
+  background: var(--danger-color);
+  color: #fff;
 }
